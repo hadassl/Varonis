@@ -1,6 +1,3 @@
-import jwt
-from cryptography.hazmat.primitives import serialization
-
 import json
 
 from sanic import Sanic
@@ -8,6 +5,24 @@ from sanic.response import s_json
 from sanic.jwt import initizlize, exceptions
 
 from Users import User, usernames, uids
+
+
+def get_json_val(value):
+    """
+    This function get the data of the filed name in the json
+    :param value: string value
+    :return: the value itself
+    """
+    return [item for key, item in value.items()][0]
+
+
+def normalization(request_data):
+    """
+    This function get the request json and return the name value
+    :param request_data: json request data
+    :return: json - name: name
+    """
+    return {value["name"]: get_json_val(value) for value in request_data}
 
 
 def auth(request):
@@ -39,31 +54,13 @@ initialize(app, authenticate=auth)
 
 @app.post('/test')
 async def inUsers(request):
-    return s_json(request.json)
+    data = normalization(request.json)
+    return s_json(data)
 
 
 if __name__ == "__main__":
   app.run(host="localhost")
 
-# define Payload data
-#payload_data = {
-#  "username": "hadas",
-#  "password": "test"
-#}
-#key = "test"
 
-# Test - get token_key based on payload data and the keygen configuration
-#private_key = open('keygen_config','r').read()
-#token_key = serialization.load_ssh_private_key(private_key.encode(), password=b'')
-
-#@app.route('/token')
-#def tokens():
-#  try:
-#    # The algorithm was found using the line - jwt.get_unverified_header(token)
-#    token = jwt.encode(payload=payload_data, key=key, algorithm='HS256')
-#    #data = jwt.decode(token, app.config['KEY'])
-#    #print(data)
-#  except:
-#    print("a")
 
 
