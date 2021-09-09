@@ -27,6 +27,6 @@ class MagicList(UserList):
         :return: list item
         """
         # check for indexErrors
-        if len(self.data) == place or place < 1:
+        if len(self.data) == place or place < 0:
             self.data.append(self.cls_type())
         return super().__getitem__(place)
